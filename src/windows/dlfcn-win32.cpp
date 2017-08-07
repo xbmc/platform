@@ -94,14 +94,17 @@ static int copy_string( char *dest, int dest_size, const char *src )
 
 void *dlopen( const char *file, int mode )
 {
-    HMODULE hModule;
+    HMODULE hModule = NULL;
     UINT uMode;
 
     /* Do not let Windows display the critical-error-handler message box */
+#if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY != WINAPI_FAMILY_APP)
     uMode = SetErrorMode( SEM_FAILCRITICALERRORS );
+#endif
 
     if( file == 0 )
     {
+#if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY != WINAPI_FAMILY_APP) // what is replacement of GMH on UWP?
         /* Save NULL pointer for error message */
         _snprintf_s( last_name, MAX_PATH, MAX_PATH, "0x%p", file );
 
@@ -114,6 +117,7 @@ void *dlopen( const char *file, int mode )
          * the RTLD_GLOBAL flag, we create our own list later on.
          */
         hModule = GetModuleHandle( NULL );
+#endif
     }
     else
     {
@@ -140,8 +144,12 @@ void *dlopen( const char *file, int mode )
          * to UNIX's search paths (start with system folders instead of current
          * folder).
          */
+#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_APP)
+        hModule = LoadPackagedLibrary( p8::windows::ToW(lpFileName).c_str(), 0 );
+#else // WINAPI_PARTITION_DESKTOP
         hModule = LoadLibraryExW( p8::windows::ToW(lpFileName).c_str(), NULL,
                                  LOAD_WITH_ALTERED_SEARCH_PATH );
+#endif
         /* If the object was loaded with RTLD_GLOBAL, add it to list of global
          * objects, so that its symbols may be retrieved even if the handle for
          * the original program file is passed. POSIX says that if the same
@@ -154,8 +162,10 @@ void *dlopen( const char *file, int mode )
             global_object_add( hModule );
     }
 
+#if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY != WINAPI_FAMILY_APP)
     /* Return to previous state of the error-mode bit flags. */
     SetErrorMode( uMode );
+#endif
 
     return (void *) hModule;
 }
