@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <vector>
 
+#if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY != WINAPI_FAMILY_APP)
+
 #if defined(_WIN32) && !defined(va_copy)
 #define va_copy(dst, src) ((dst) = (src))
 #endif
@@ -4336,3 +4338,5 @@ struct StdStringEqualsNoCaseA
 typedef std::vector<CStdString> CStdStringArray;
 
 #endif  // #ifndef STDSTRING_H
+
+#endif // WINAPI_PARTITION_DESKTOP
