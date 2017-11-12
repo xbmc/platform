@@ -68,7 +68,6 @@ install(FILES src/threads/atomics.h
 install(FILES src/util/atomic.h
               src/util/buffer.h
               src/util/StringUtils.h
-              src/util/StdString.h
               src/util/timeutils.h
               src/util/util.h
         DESTINATION include/p8-platform/util)
