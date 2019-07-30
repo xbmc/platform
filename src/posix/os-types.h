@@ -123,7 +123,7 @@ typedef LONG HRESULT;
   typedef fpos_t fpos64_t;
   #define __stat64 stat
   #define stat64 stat
-  #if defined(TARGET_DARWIN_IOS)
+  #if defined(TARGET_DARWIN_IOS) || defined(TARGET_DARWIN_EMBEDDED)
     #define statfs64 statfs
   #endif
   #define fstat64 fstat
