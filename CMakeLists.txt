@@ -22,7 +22,8 @@ set(p8-platform_VERSION_PATCH 1)
 set(CMAKE_POSITION_INDEPENDENT_CODE on)
 
 if(WIN32)
-  set(PLAT_SOURCES src/windows/dlfcn-win32.cpp
+  set(PLAT_SOURCES src/windows/CharsetConverter.cpp
+                   src/windows/dlfcn-win32.cpp
                    src/windows/os-threads.cpp)
 endif()
 
@@ -33,7 +34,7 @@ endif(WIN32)
 set(p8-platform_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 if(NOT ${CORE_SYSTEM_NAME} STREQUAL "")
-  if(${CORE_SYSTEM_NAME} STREQUAL "osx" OR ${CORE_SYSTEM_NAME} STREQUAL "ios")
+  if(${CORE_SYSTEM_NAME} STREQUAL "osx" OR ${CORE_SYSTEM_NAME} STREQUAL "ios" OR ${CORE_SYSTEM_NAME} STREQUAL "darwin_embedded")
     list(APPEND p8-platform_LIBRARIES "-framework CoreVideo")
   endif()
 endif()
@@ -75,7 +76,8 @@ endif(WIN32)
 install(TARGETS p8-platform DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES src/os.h DESTINATION include/p8-platform)
 if(WIN32)
-  install(FILES src/windows/dlfcn-win32.h
+  install(FILES src/windows/CharsetConverter.h
+                src/windows/dlfcn-win32.h
                 src/windows/os-socket.h
                 src/windows/os-threads.h
                 src/windows/os-types.h
